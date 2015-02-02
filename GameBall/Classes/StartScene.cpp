@@ -50,5 +50,5 @@ void StartScene::menuCloseCallback(CCObject* pSender){
 }
 
 void StartScene::menuNewGameCallback(CCObject* pSender){
-	CCDirector::sharedDirector()->replaceScene(GameScene::create());
+	CCDirector::sharedDirector()->replaceScene(GameScene::scene());
 }

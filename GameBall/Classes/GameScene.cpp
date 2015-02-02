@@ -32,8 +32,8 @@ bool GameScene::init(){
 		return false;
 
 	CCSprite* backGround = CCSprite::create("background1.jpg");
-	backGround->setAnchorPoint(CCPointZero);
-	backGround->setPosition(CCPointZero);
+	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+	backGround->setPosition(ccp(winSize.width/2, winSize.height/2));
 	this->addChild(backGround);
 
 	initScheduler();
@@ -57,6 +57,32 @@ bool GameScene::initScheduler(){
 	return true;
 }
 
+//初始化泡泡队列，
 bool GameScene::initBoard(){
-
+	return true;
 }
+
+//初如化泡泡发射器
+bool GameScene::initReadyBubble(){
+	for (int row = 0; row < MAX_ROWS; row++){
+		for (int col = 0; col < MAX_COLS - row%2; col++){
+			if (row >= INIT_LINE){
+				m_board[row][col] = NULL;
+			}
+
+			Bubble* pBubble = randomBubble();
+			if (pBubble == NULL)
+			{
+				return;
+			}
+			pBubble->setPosition();
+		}
+	}
+	return true;
+}
+
+bool GameScene::initWaitBubble(){
+	return true;
+}
+
+
