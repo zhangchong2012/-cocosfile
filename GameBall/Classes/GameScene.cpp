@@ -1,5 +1,5 @@
 #include "GameScene.h"
-
+#include "Utility.h"
 
 GameScene::GameScene(void):
 	m_state(GS_START), 
@@ -15,7 +15,7 @@ GameScene::GameScene(void):
 
 GameScene::~GameScene(void)
 {
-	clear();
+	//clear();
 }
 
 CCScene* GameScene::scene(){
@@ -66,6 +66,14 @@ bool GameScene::initBoard(){
 				continue;
 			}
 			Bubble* pBubble = randomBubble();
+			if(!pBubble)
+				return false;
+			pBubble->setPosition(getPosByRowAndCol(row, col));
+			this->addChild(pBubble);
+
+			m_board[row][col] = pBubble;
+			m_board[row][col]->setRowColIndex(row, col);
+			m_listBubble.push_back(pBubble);
 		}
 	}
 	return true;
@@ -73,25 +81,60 @@ bool GameScene::initBoard(){
 
 //≥ı»ÁªØ≈›≈›∑¢…‰∆˜
 bool GameScene::initReadyBubble(){
-	for (int row = 0; row < MAX_ROWS; row++){
-		for (int col = 0; col < MAX_COLS - row%2; col++){
-			if (row >= INIT_LINE){
-				m_board[row][col] = NULL;
-			}
+	m_curReady = randomBubble();
 
-			Bubble* pBubble = randomBubble();
-			if (pBubble == NULL)
-			{
-				return;
-			}
-			pBubble->setPosition();
-		}
-	}
+	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+	m_curReady->setPosition(ccp(winSize.width/2, winSize.height/10));
+	this->addChild(m_curReady);
 	return true;
 }
 
 bool GameScene::initWaitBubble(){
+	for (int i = 0; i < MAX_WAIT_BUBBLE; i++)
+	{
+		Bubble* bubble = randomBubble();
+
+		CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+		bubble->setPosition(ccp(winSize.width/2 + (i+1) * BUBBLE_RADIUS * 2,  winSize.height/20));
+		m_wait[i] = bubble;
+		this->addChild(bubble);
+	}
 	return true;
 }
 
+Bubble* GameScene::randomBubble(){
+	BUBBLE_COLOR color = static_cast<BUBBLE_COLOR>(rand() % COLOR_COUNT);
+	Bubble* bubble = Bubble::create();
+	if(bubble && bubble->initWithFile(g_bubbleName[color].c_str())){
+		bubble->setBubbleColor(color);
+	}
+	return bubble;
+}
 
+
+void GameScene::clear(){
+	for (int row = 0; row < MAX_ROWS; row++)
+	{
+		for (int col = 0; col < MAX_COLS; col++)
+		{
+			CC_SAFE_DELETE(m_board[row][col]);
+		}
+	}
+	m_listBubble.clear();
+}
+
+bool GameScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
+	return true;
+}
+
+void GameScene::ccTouchesMoved(CCSet *pTouches, CCEvent *pEvent){
+
+}
+
+void GameScene::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent){
+
+}
+
+void GameScene::ccTouchCancelled(CCTouch *pTouch, CCEvent *pEvent){
+
+}

@@ -207,4 +207,95 @@ void getGoldenLine(int row, int col, ROWCOL_LIST& listRowCol){
 	} while (nextFlag);
 }
 
+
+void getSliverLine(int row, int col, ROWCOL_LIST& listRowCol){
+	if (!isValidPos(row, col))
+		return;
+	RowCol nextRowCol(row, col);
+	bool nextFlag = false;
+
+	listRowCol.push_back(nextRowCol);
+
+	//Left Top
+	do 
+	{
+		if (nextRowCol.m_Row%2 == 0)
+		{
+			nextRowCol.m_Row --;
+			nextRowCol.m_Col --;
+		}else
+		{
+			nextRowCol.m_Row --;
+		}
+
+		if(isValidPos(nextRowCol)){
+			listRowCol.push_back(nextRowCol);
+			nextFlag = true;
+		}else
+		{
+			nextFlag = false;
+		}
+	} while (nextFlag);
+
+	//same rows
+	nextRowCol.m_Row = row;
+	nextRowCol.m_Col = col;
+
+
+	//×ó±ß
+	nextRowCol.m_Row = row;
+	nextRowCol.m_Col = col;
+	do 
+	{
+		nextRowCol.m_Col --;
+		if(isValidPos(nextRowCol)){
+			listRowCol.push_back(nextRowCol);
+			nextFlag = true;
+		}else
+		{
+			nextFlag = false;
+		}
+	} while (nextFlag);
+
+	//ÓÒ±ß
+	nextRowCol.m_Col = col;
+	do 
+	{
+		nextRowCol.m_Col ++;
+		if(isValidPos(nextRowCol)){
+			listRowCol.push_back(nextRowCol);
+			nextFlag = true;
+		}else
+		{
+			nextFlag = false;
+		}
+	} while (nextFlag);
+
+
+	//Right Top
+	nextRowCol.m_Row = row;
+	nextRowCol.m_Col = col;
+	do 
+	{
+		if (nextRowCol.m_Row%2 == 0)
+		{
+			nextRowCol.m_Row --;
+		}else
+		{
+			nextRowCol.m_Row --;
+			nextRowCol.m_Col ++;
+		}
+
+		if(isValidPos(nextRowCol)){
+			listRowCol.push_back(nextRowCol);
+			nextFlag = true;
+		}else
+		{
+			nextFlag = false;
+		}
+	} while (nextFlag);
+
+
+
+}
 #endif

@@ -45,3 +45,8 @@ BUBBLE_COLOR Bubble::randomColor(){
 	m_color = static_cast<BUBBLE_COLOR>(rand() % COLOR_COUNT);
 	return m_color;
 }
+
+void Bubble::setRowColIndex(int row, int col){
+	m_RowIndex = row;
+	m_ColIndex = col;
+}
