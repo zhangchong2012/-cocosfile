@@ -59,6 +59,15 @@ bool GameScene::initScheduler(){
 
 //初始化泡泡队列，
 bool GameScene::initBoard(){
+	for (int row = 0; row < MAX_ROWS; row ++){
+		for (int col = 0; col < MAX_COLS; col++){
+			if(row > INIT_LINE){
+				m_board[row][col] = NULL;
+				continue;
+			}
+			Bubble* pBubble = randomBubble();
+		}
+	}
 	return true;
 }
 
