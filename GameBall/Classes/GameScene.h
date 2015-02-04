@@ -25,7 +25,7 @@ public:
 	virtual bool init();
 
 	void loop();
-	void update();
+	void update(float delta);
 	bool ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent);
 	void ccTouchesMoved(CCSet *pTouches, CCEvent *pEvent);
 	void ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent);
@@ -43,6 +43,8 @@ private:
 	bool initReadyBubble();
 	bool initBoard();
 	bool initWaitBubble();
+
+
 	bool isCollisionWithBorder();//是否和左右边缘碰撞
 	bool isCollisionWithTopBorder(Bubble *pBubble);	//是否和顶层边缘碰撞，
 	bool isCollision();	//是否碰撞，仅包括是否和上方所有的球碰撞和顶层边缘碰撞， 不包括和左右边缘碰撞

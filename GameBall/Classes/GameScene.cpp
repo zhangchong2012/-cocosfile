@@ -132,9 +132,42 @@ void GameScene::ccTouchesMoved(CCSet *pTouches, CCEvent *pEvent){
 }
 
 void GameScene::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent){
+	m_state = GS_FLY;
+	CCPoint pos = pTouch->getLocation();
+	m_real = ccpNormalize(ccpSub(pos, m_curReady->getPosition()));
 
+	setDisableEnable();
+	this->scheduleUpdate();
 }
 
 void GameScene::ccTouchCancelled(CCTouch *pTouch, CCEvent *pEvent){
+	
+}
 
+void GameScene::update(float delta){
+	if(isCollisionWithBorder()){
+		m_real.x =- m_real.x;
+	}
+
+	CCPoint pos = m_curReady->getPosition();
+	m_curReady->setPosition(ccp(pos.x + m_real.x * BUBBLE_SPEED, pos.y + m_real.y * BUBBLE_SPEED));
+
+	//if(isCollision()){
+	//	m_real = CCPointZero;
+	//}
+}
+
+bool GameScene::isCollisionWithBorder(){
+	CCSize size = CCDirector::sharedDirector()->getWinSize();
+	CCPoint pos = m_curReady->getPosition();
+	if (pos.x < BUBBLE_RADIUS || pos.x > size.width - BUBBLE_RADIUS)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool GameScene::isCollision(){
+	return false;
 }
