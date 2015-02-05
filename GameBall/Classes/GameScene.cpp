@@ -134,6 +134,7 @@ void GameScene::ccTouchesMoved(CCSet *pTouches, CCEvent *pEvent){
 void GameScene::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent){
 	m_state = GS_FLY;
 	CCPoint pos = pTouch->getLocation();
+	//标准化向量
 	m_real = ccpNormalize(ccpSub(pos, m_curReady->getPosition()));
 
 	setDisableEnable();
@@ -145,16 +146,24 @@ void GameScene::ccTouchCancelled(CCTouch *pTouch, CCEvent *pEvent){
 }
 
 void GameScene::update(float delta){
-	if(isCollisionWithBorder()){
+	if(isCollisionWithBorder())
+	{
 		m_real.x =- m_real.x;
 	}
 
 	CCPoint pos = m_curReady->getPosition();
 	m_curReady->setPosition(ccp(pos.x + m_real.x * BUBBLE_SPEED, pos.y + m_real.y * BUBBLE_SPEED));
 
-	//if(isCollision()){
-	//	m_real = CCPointZero;
-	//}
+	if(isCollision()){
+		m_real = CCPointZero;
+
+		adjustBubblePosition();
+
+		this->unscheduleUpdate();
+		setEnable();
+
+		changeWaitToReady();
+	}
 }
 
 bool GameScene::isCollisionWithBorder(){
@@ -169,5 +178,56 @@ bool GameScene::isCollisionWithBorder(){
 }
 
 bool GameScene::isCollision(){
+	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+
+	if(m_curReady->getPosition().y > winSize.height - BUBBLE_RADIUS){
+		return true;
+	}
+	for (BUBBLE_LIST::reverse_iterator iterBubble = m_listBubble.rbegin(); iterBubble != m_listBubble.rend(); ++iterBubble)
+	{
+		Bubble* bubble = *iterBubble;
+		if (bubble && isCollisionWithBubble(bubble->getPosition(), BUBBLE_RADIUS, m_curReady->getPosition(), BUBBLE_RADIUS))
+		{
+			return true;
+		}
+	}
+
 	return false;
+}
+
+
+bool GameScene::isCollisionWithBubble(CCPoint pos, float radius, CCPoint pos2, float radius2){
+	return pow(pos.x - pos2.x, 2) + pow(pos.y - pos2.y, 2) < pow(radius + radius2, 2);	//判断两圆是否相交, 公式：（x1-x2)^2 + (y1-y2)^2 < (r1 + r2)^2
+	//return pow(pos.x - pos2.x, 2) + pow(pos.y - pos.y, 2) < pow(radius + radius2, 2);
+}
+
+void GameScene::adjustBubblePosition(){
+	CCPoint curPos = m_curReady->getPosition();
+	RowCol rowcol_Index = getRowColByPos(curPos.x, curPos.y);
+	CCPoint adjustPos = getPosByRowAndCol(rowcol_Index.m_Row, rowcol_Index.m_Col);
+
+	m_curReady->setPosition(adjustPos);
+	m_curReady->setRowColIndex(rowcol_Index.m_Row, rowcol_Index.m_Col);
+
+	m_board[rowcol_Index.m_Row][rowcol_Index.m_Col] = m_curReady;
+	m_listBubble.push_back(m_curReady);
+}
+
+
+void GameScene::changeWaitToReady(){
+	m_curReady = m_wait[0];
+	m_curReady->setPosition(READY_BUBBLE_POS);
+
+	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+
+	for (int index = 0; index < MAX_WAIT_BUBBLE - 1; index++)
+	{
+		m_wait[index] = m_wait[index + 1];
+		m_wait[index]->setPosition(ccp(winSize.width/2 + (index+1) * BUBBLE_RADIUS * 2, winSize.height/20));
+	}
+
+	m_wait[MAX_WAIT_BUBBLE - 1] = randomBubble();
+	m_wait[MAX_WAIT_BUBBLE - 1]->setPosition(ccp(winSize.width/2+MAX_WAIT_BUBBLE * BUBBLE_RADIUS *2, winSize.height/20));
+
+	this->addChild(m_wait[MAX_WAIT_BUBBLE - 1]);
 }

@@ -48,7 +48,10 @@ private:
 	bool isCollisionWithBorder();//是否和左右边缘碰撞
 	bool isCollisionWithTopBorder(Bubble *pBubble);	//是否和顶层边缘碰撞，
 	bool isCollision();	//是否碰撞，仅包括是否和上方所有的球碰撞和顶层边缘碰撞， 不包括和左右边缘碰撞
-	
+	bool isCollisionWithBubble(CCPoint pos, float radius, CCPoint pos2, float radius2);
+
+	void changeWaitToReady();
+
 	void adjustBubblePosition();
 	void setEnable();
 	void setDisableEnable();
