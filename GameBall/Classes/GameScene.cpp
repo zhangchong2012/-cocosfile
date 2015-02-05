@@ -205,7 +205,10 @@ void GameScene::adjustBubblePosition(){
 	CCPoint curPos = m_curReady->getPosition();
 	RowCol rowcol_Index = getRowColByPos(curPos.x, curPos.y);
 	CCPoint adjustPos = getPosByRowAndCol(rowcol_Index.m_Row, rowcol_Index.m_Col);
-
+	
+	CCLog("curPos.x is %f, curPos.y is %f",curPos.x, curPos.y);
+	CCLog("rowcol_Index.row is %f, rowcol_Index.col is %f",rowcol_Index.m_Row, rowcol_Index.m_Col);
+	CCLog("adjustPos.x is %f, adjustPos.y is %f",adjustPos.x, adjustPos.y);
 	m_curReady->setPosition(adjustPos);
 	m_curReady->setRowColIndex(rowcol_Index.m_Row, rowcol_Index.m_Col);
 

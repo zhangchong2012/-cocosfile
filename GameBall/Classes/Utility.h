@@ -29,10 +29,21 @@ CCPoint getPosByRowAndCol(int row, int col){
 }
 
 RowCol getRowColByPos(int posX, int posY){
-	int y = CCDirector::sharedDirector()->getWinSize().height - posY;
-	int row = (y - BUBBLE_RADIUS)/(2 * BUBBLE_RADIUS * sin(PI /3 )) + 0.5;
-	int col = (y - (row % 2) * BUBBLE_RADIUS - BUBBLE_RADIUS)/(2 * BUBBLE_RADIUS) + 0.5;
-	return RowCol(row, col);
+	int nRow, nCol;
+	//需要四舍五入
+
+	posY = CCDirector::sharedDirector()->getWinSize().height - posY;
+
+	nRow = ( posY -BUBBLE_RADIUS )/( 2 *BUBBLE_RADIUS *sin ( PI/3 ) ) +0.5;
+
+	nCol = ( posX - ( nRow % 2 ) * BUBBLE_RADIUS - BUBBLE_RADIUS ) * 1.0 /(  2 *BUBBLE_RADIUS ) + 0.5;
+
+	return RowCol( nRow, nCol );
+
+	//int y = CCDirector::sharedDirector()->getWinSize().height - posY;
+	//int row = (y - BUBBLE_RADIUS)/(2 * BUBBLE_RADIUS * sin(PI /3 )) + 0.5;
+	//int col = (posX - (row % 2) * BUBBLE_RADIUS - BUBBLE_RADIUS) * 1.0/(2 * BUBBLE_RADIUS) + 0.5;
+	//return RowCol(row, col);
 }
 
 bool isValidPos(RowCol rowCol){
